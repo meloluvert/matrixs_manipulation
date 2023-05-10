@@ -39,7 +39,7 @@ public:
                     std::cout << " " << Mat[i][j] << " |";
                 }
             }
-            if (i != 2)
+            if (i != this->getLines())
             {
                 std::cout << std::endl
                           << "     __ __ __\n"
@@ -51,29 +51,27 @@ public:
         getDet();
         cout << "Qtd de linhas:" << l << "\n";
         cout << "Qtd de colunas:" << c << "\n";
-        cout << "Diagonal principal:" << diagP << "\n";
-        cout << "Diagonal Secudária:" << diagS << "\n";
+        cout << "Soma Diagonal principal:" << diagP << "\n";
+        cout << "Soma Diagonal Secudária:" << diagS << "\n";
         cout << "Determinante:" << det << "\n";
     }
     /*Soma de Matrizes*/
-    Matriz soma(Matriz Mat2)
-    {
-        Matriz M3(this->getLine(), this->getColumn()); /*Vai ser a soma*/
-        for (int i = 0; i < this->getLine(); i++)
+    void soma(Matriz Mat2)
+    { /*Vai ser a soma*/
+        for (int i = 0; i < this->getLines(); i++)
         {
             for (int j = 0; j < this->getColumn(); j++)
             {
 
-                M3.setNumber(i,j,this->getNumber(i,j) + Mat2.getNumber(i,j));
+                this->setNumber(i, j, this->getNumber(i, j) + Mat2.getNumber(i, j));
             }
         }
-        return M3;
     }
 
     /*Preenche com nº aleatórios*/
     void fillRandNumbers(int max)
     { /*Valor máximo dos aleatórios*/
-        for (int i = 0; i < this->getLine(); i++)
+        for (int i = 0; i < this->getLines(); i++)
         {
             for (int j = 0; j < this->getColumn(); j++)
             {
@@ -141,11 +139,12 @@ public:
     {
         return this->c;
     }
-    int getLine()
+    int getLines()
     {
         return c;
     }
-    double getNumber(int l, int c){
+    double getNumber(int l, int c)
+    {
         return Mat[l][c];
     }
     void setColumns(int c)
@@ -173,14 +172,14 @@ public:
         {
             delete Mat[i];
         }
-        delete Mat;
+        delete[] Mat;
     }
 };
 
 int main()
 {
     srand(time(NULL));
-    int op, op2, op3;
+    int op, op2, op3, op4;
     double n;
     int numMatrizes;
     int l, c;
@@ -207,7 +206,7 @@ int main()
         system("clear");
         cout << "Escolha uma opção\n";
         cout << "1 - Mostrar matriz\n";
-        cout << "FAzer a Matriz Transposta";
+        cout << "Fazer a Matriz Transposta(falta implementar)\n";
         cout << "2 - Preecnher Matriz\n";
         cout << "3 - Alterar Matriz\n";
         cout << "4 - Somar Matrizes\n";
@@ -256,29 +255,18 @@ int main()
             cout << "Matriz B:";
             cin >> op2;
 
-            if (matrizes[op - 1].getColumn() == matrizes[op2 - 1].getColumn() && matrizes[op - 1].getLine() == matrizes[op2 - 1].getLine())
+            if (matrizes[op - 1].getColumn() == matrizes[op2 - 1].getColumn() && matrizes[op - 1].getLines() == matrizes[op2 - 1].getLines())
             {
-                int linha = matrizes[op - 1].getLine();
-                int coluna = matrizes[op - 1].getColumn();
-
-                cout << "Qual matriz você deseja desalocar para isso?";
+                cout << "Qual matriz você deseja desalocar para isso? " << op2 << " ou " << op;
                 cin >> op3;
-
-                matrizes[op3 - 1].setLines(linha);
-                matrizes[op3 - 1].setColumns(coluna);
-Matriz M4(matrizes[op - 1].getLine(),matrizes[op - 1].getColumn());
-                for (int j = 0; j < matrizes[op - 1].getLine(); j++)
+                if (op3 == op2)
                 {
-                    for (int i = 0; i < matrizes[op - 1].getColumn(); i++)
-                    {
-                         M4.setNumber(i,j,  (matrizes[op - 1].soma(matrizes[op2 - 1])).getNumber(i, j));
-                    }
-                    
-                   
+                    matrizes[op2 - 1].soma(matrizes[op - 1]);
                 }
-                
-                
-                matrizes[op3 - 1] = M4;
+                else if (op3 == op)
+                {
+                    matrizes[op - 1].soma(matrizes[op2 - 1]);
+                }
             }
         }
 
