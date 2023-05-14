@@ -30,20 +30,11 @@ public:
             /*std::cout << i + 1 << "   ";*/
             for (int j = 0; j < c; j++)
             {
-                if (Mat[i][j] != '\0')
-                {
-                    std::cout << " " << Mat[i][j] << "|";
-                }
-                else
-                {
-                    std::cout << " " << Mat[i][j] << " |";
-                }
+                    std::cout << " " << Mat[i][j] << "|"<<"\t";
             }
             if (i != this->getLines())
             {
-                std::cout << std::endl
-                          << "     __ __ __\n"
-                          << std::endl;
+                          std::cout << std::endl;
             }
         }
 
@@ -141,7 +132,7 @@ public:
     }
     int getLines()
     {
-        return c;
+        return l;
     }
     double getNumber(int l, int c)
     {
@@ -165,6 +156,39 @@ public:
     {
         Mat[l][c] = n;
     }
+    void multiplica(Matriz A, Matriz B)
+    {
+        for (int i = 0; i < A.getLines(); i++)
+            for (int j = 0; j < B.getColumn(); j++)
+                Mat[i][j] = 0;
+
+        for (int i = 0; i < A.getLines(); i++)
+            for (int j = 0; j < B.getColumn(); j++)
+                for (int k = 0; k < A.getColumn(); k++)
+                    Mat[i][j] += A.getNumber(i,k) * B.getNumber(k,j);
+        
+
+    };
+ 
+void transposta()
+{
+    Matriz T(c, l);
+    for (int i = 0; i < l; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+                T.setNumber(j, i, Mat[i][j]);
+        }
+    }
+    this->setLines(c);
+    this->setColumns(l);
+    for (int i = 0; i < getLines(); i++)
+        for (int j = 0; j < getColumn(); j++)
+            this->setNumber(i, j, T.getNumber(i,j));
+
+
+}
+
     /*desaloca*/
     ~Matriz()
     {
@@ -183,17 +207,16 @@ int main()
     double n;
     int numMatrizes;
     int l, c;
-    std::cout << "Bem vindo ao Menu das Matrizes, quantas matrizesw você deseja alocar?" << std::endl;
+    std::cout << "Bem vindo ao Menu das Matrizes, quantas matrizes você deseja alocar?" << std::endl;
     cin >> numMatrizes;
     /*Pede linha e colunas de cada matriz*/
 
     Matriz matrizes[numMatrizes];
     for (int i = 0; i < numMatrizes; i++)
     {
-        cout << "Matriz" << i + 1 << "\n";
+        cout << "Matriz " << i + 1 << "\n";
         cout << "Linhas:";
         cin >> l;
-        cout << "\n";
         cout << "Colunas:";
         cin >> c;
         matrizes[i].setLines(l);
@@ -204,13 +227,13 @@ int main()
     do
     {
         system("clear");
-        cout << "Escolha uma opção\n";
+        cout << "Menu das Matrizes\n";
         cout << "1 - Mostrar matriz\n";
-        cout << "Fazer a Matriz Transposta(falta implementar)\n";
         cout << "2 - Preecnher Matriz\n";
         cout << "3 - Alterar Matriz\n";
         cout << "4 - Somar Matrizes\n";
         cout << "5 - Multiplicar Matruizes\n";
+        cout << "6 - Transposição\n";
         cin >> op;
         system("clear");
         switch (op)
@@ -246,8 +269,9 @@ int main()
             cin >> n;
             cout << "\n";
             matrizes[op - 1].setNumber(l - 1, c - 1, n);
-            cout << "Alterada com sucesso(aperte enter)";
+            cout << "Alterada com sucesso! (aperte enter)";
             cin.ignore().get();
+            break;
         case 4:
             cout << "Quais matrizes deseja somar?";
             cout << "Matriz A:";
@@ -268,8 +292,34 @@ int main()
                     matrizes[op - 1].soma(matrizes[op2 - 1]);
                 }
             }
-        }
+            break;
 
+        case 5:
+            cout << "Quais matrizes deseja multiplicar?";
+            cout << "Matriz A:";
+            cin >> op;
+            cout << "Matriz B:";
+            cin >> op2;
+
+            if (matrizes[op - 1].getColumn() == matrizes[op2 - 1].getLines())
+            {
+                cout << "Qual matriz você deseja desalocar para isso? ";
+                cin >> op3;
+                matrizes[op3 - 1].setLines(matrizes[op - 1].getLines());
+                matrizes[op3 - 1].setColumns(matrizes[op2 - 1].getColumn());
+                matrizes[op3 - 1].multiplica(matrizes[op - 1], matrizes[op2 - 1]);
+
+            }
+            break;
+            case 6:
+            cout << "Em qual matriz você deseja fazer a transposição? ";
+            cin>>op;
+            matrizes[op - 1].transposta();
+            cout << "Transposta com sucesso! (aperte enter)";
+            cin.ignore().get();
+            break;
+
+        }
     } while (op != 4);
 
     return 0;
