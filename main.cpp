@@ -18,10 +18,8 @@ public:
         this->setLines(l);
         this->setColumns(c);
     }
-
     /*Para que possa alocar sem passar parâmetro*/
     Matriz() {}
-
     void showMatriz(int n)
     { /*n é o nº da matriz*/
         cout << "Matriz " << n << "\n";
@@ -30,11 +28,12 @@ public:
             /*std::cout << i + 1 << "   ";*/
             for (int j = 0; j < c; j++)
             {
-                    std::cout << " " << Mat[i][j] << "|"<<"\t";
+                std::cout << Mat[i][j] << "|"
+                          << "\t";
             }
             if (i != this->getLines())
             {
-                          std::cout << std::endl;
+                std::cout << std::endl;
             }
         }
 
@@ -46,19 +45,18 @@ public:
         cout << "Soma Diagonal Secudária:" << diagS << "\n";
         cout << "Determinante:" << det << "\n";
     }
-    /*Soma de Matrizes*/
-    void soma(Matriz Mat2)
-    { /*Vai ser a soma*/
+    void soma(Matriz A, Matriz B)
+    {
+        int soma;
         for (int i = 0; i < this->getLines(); i++)
         {
             for (int j = 0; j < this->getColumn(); j++)
             {
-
-                this->setNumber(i, j, this->getNumber(i, j) + Mat2.getNumber(i, j));
+                soma = A.getNumber(i, j) + B.getNumber(i, j);
+                this->setNumber(i, j, soma);
             }
         }
     }
-
     /*Preenche com nº aleatórios*/
     void fillRandNumbers(int max)
     { /*Valor máximo dos aleatórios*/
@@ -75,12 +73,49 @@ public:
             getDet();
         };
     }
+    void userFill()
+    {
+        double n;
+        for (int i2 = 0; i2 < getLines(); i2++)
+        {
+
+            for (int j2 = 0; j2 < getColumn(); j2++)
+            {
+                cout << "Matriz " << n << "\n";
+                for (int i = 0; i < l; i++)
+                { // loop mostra as linhas
+                    /*std::cout << i + 1 << "   ";*/
+                    for (int j = 0; j < c; j++)
+                    {
+                        if (i == i2 && j2 == j)
+                        {
+                            std::cout << "x";
+                        }
+                        else
+                        {
+                            std::cout << Mat[i][j];
+                        }
+                        cout << "|"
+                             << "\t";
+                    }
+                    if (i != this->getLines())
+                    {
+                        std::cout << std::endl;
+                    }
+                }
+                std::cout << "Linha:" << i2 + 1 << std::endl;
+                std::cout << "Coluna:" << j2 + 1 << std::endl;
+                std::cout << "Número:";
+                std::cin >> n;
+                setNumber(i2, j2, n);
+            }
+        }
+    }
     /*é quadrada?*/
     bool square()
     {
         return (c == l) ? true : false;
     }
-
     /*Gera o determinante*/
     void getDet()
     {
@@ -113,7 +148,6 @@ public:
             det *= M.Mat[i][i];
         }
     }
-
     void diagonais()
     {
 
@@ -125,7 +159,6 @@ public:
             diagS += Mat[i][l - 1 - i];
         }
     }
-
     int getColumn()
     {
         return this->c;
@@ -151,7 +184,6 @@ public:
         this->l = l;
         Mat = new double *[l];
     }
-
     void setNumber(int l, int c, double n)
     {
         Mat[l][c] = n;
@@ -165,30 +197,24 @@ public:
         for (int i = 0; i < A.getLines(); i++)
             for (int j = 0; j < B.getColumn(); j++)
                 for (int k = 0; k < A.getColumn(); k++)
-                    Mat[i][j] += A.getNumber(i,k) * B.getNumber(k,j);
-        
-
+                    Mat[i][j] += A.getNumber(i, k) * B.getNumber(k, j);
     };
- 
-void transposta()
-{
-    Matriz T(c, l);
-    for (int i = 0; i < l; i++)
+    void transposta()
     {
-        for (int j = 0; j < c; j++)
+        Matriz T(c, l);
+        for (int i = 0; i < l; i++)
         {
+            for (int j = 0; j < c; j++)
+            {
                 T.setNumber(j, i, Mat[i][j]);
+            }
         }
+        this->setLines(c);
+        this->setColumns(l);
+        for (int i = 0; i < getLines(); i++)
+            for (int j = 0; j < getColumn(); j++)
+                this->setNumber(i, j, T.getNumber(i, j));
     }
-    this->setLines(c);
-    this->setColumns(l);
-    for (int i = 0; i < getLines(); i++)
-        for (int j = 0; j < getColumn(); j++)
-            this->setNumber(i, j, T.getNumber(i,j));
-
-
-}
-
     /*desaloca*/
     ~Matriz()
     {
@@ -221,6 +247,7 @@ int main()
         cin >> c;
         matrizes[i].setLines(l);
         matrizes[i].setColumns(c);
+        cout << "=========" << endl;
     }
 
     system("clear");
@@ -234,11 +261,11 @@ int main()
         cout << "4 - Somar Matrizes\n";
         cout << "5 - Multiplicar Matruizes\n";
         cout << "6 - Transposição\n";
+        cout << "7 - Finalizar\n";
         cin >> op;
         system("clear");
         switch (op)
         {
-
         case 1:
             cout << "Qual matriz?";
             cin >> op;
@@ -249,7 +276,17 @@ int main()
         case 2:
             cout << "Qual matriz?";
             cin >> op;
-            matrizes[op - 1].fillRandNumbers(9);
+            cout << "1 - Digitado\n";
+            cout << "2 - Aleatoriamente\n";
+            cin >> op2;
+            if (op2 == 1)
+            {
+                matrizes[op - 1].userFill();
+            }
+            else if (op2 == 2)
+            {
+                matrizes[op - 1].fillRandNumbers(9);
+            }
             cout << "Matriz preecnhida! (aperte enter)";
             cin.ignore().get();
             break;
@@ -281,16 +318,17 @@ int main()
 
             if (matrizes[op - 1].getColumn() == matrizes[op2 - 1].getColumn() && matrizes[op - 1].getLines() == matrizes[op2 - 1].getLines())
             {
-                cout << "Qual matriz você deseja desalocar para isso? " << op2 << " ou " << op;
+                cout << "Qual matriz você deseja desalocar para isso? ";
                 cin >> op3;
-                if (op3 == op2)
-                {
-                    matrizes[op2 - 1].soma(matrizes[op - 1]);
-                }
-                else if (op3 == op)
-                {
-                    matrizes[op - 1].soma(matrizes[op2 - 1]);
-                }
+
+                matrizes[op3 - 1].setLines(matrizes[op2 - 1].getLines());
+                matrizes[op3 - 1].setColumns(matrizes[op - 1].getColumn());
+                matrizes[op3 - 1].soma(matrizes[op2 - 1], matrizes[op - 1]);
+            }
+            else
+            {
+                cout << endl << "As Matrizes não são do mesmo tipo";
+                cin.ignore().get();
             }
             break;
 
@@ -308,19 +346,19 @@ int main()
                 matrizes[op3 - 1].setLines(matrizes[op - 1].getLines());
                 matrizes[op3 - 1].setColumns(matrizes[op2 - 1].getColumn());
                 matrizes[op3 - 1].multiplica(matrizes[op - 1], matrizes[op2 - 1]);
-
             }
             break;
-            case 6:
+        case 6:
             cout << "Em qual matriz você deseja fazer a transposição? ";
-            cin>>op;
+            cin >> op;
             matrizes[op - 1].transposta();
             cout << "Transposta com sucesso! (aperte enter)";
             cin.ignore().get();
             break;
-
+        case 7:
+            return 0;
         }
-    } while (op != 4);
+    } while (op != 7);
 
     return 0;
 }
